@@ -189,10 +189,10 @@ export default {
           const resumenFinal = resumenMatch ? resumenMatch[1].trim() : this.analisisGPTText.slice(-200); // fallback: últimas 200 chars
 
           // Guardar resumen en DB
-          await axios.post("/guardarResumen", { resumen: resumenFinal });
+          //await axios.post("/guardarResumen", { resumen: resumenFinal });
 
           // Actualizar historial local
-          await this.fetchHistorial();
+          //await this.fetchHistorial();
         } else {
           this.analisisGPTText = "No se recibió un análisis válido del servidor.";
         }
