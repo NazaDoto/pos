@@ -4,7 +4,8 @@
     <h1 class="text-2xl font-bold">Análisis Inteligente</h1>
 
     <!-- Botón para análisis -->
-    <button @click="onClickAnalisis" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:cursor-pointer transition">
+    <button @click="onClickAnalisis"
+      class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 hover:cursor-pointer transition">
       Análisis Inteligente
     </button>
 
@@ -32,10 +33,16 @@
     <div class="bg-white p-4 rounded shadow mt-6">
       <h3 class="font-semibold mb-2">Historial de resúmenes</h3>
       <div v-if="historial.length === 0" class="text-gray-500">No hay resúmenes guardados.</div>
-      <ul v-else class="space-y-2 max-h-64 overflow-y-auto">
+      <ul v-else class="space-y-2 max-h-96 overflow-y-auto">
         <li v-for="item in historial" :key="item.id" class="border p-2 rounded bg-gray-50">
-          <div class="text-sm text-gray-400">{{ item.fecha }}</div>
-          <div>{{ item.resumen }}</div>
+          <div class="flex justify-between items-center cursor-pointer" @click="toggleExpanded(item.id)">
+            <div class="text-sm text-gray-400">{{ formatearFecha(item.fecha) }}</div>
+            <div class="text-blue-600 font-semibold">{{ expandedId === item.id ? '▲' : '▼' }}</div>
+          </div>
+          <div v-if="expandedId === item.id" class="mt-2">
+            <div class="text-gray-700 mb-1"><strong>Resumen:</strong> {{ item.resumen }}</div>
+            <div class="text-gray-600 whitespace-pre-wrap"><strong>Análisis completo:</strong> {{ item.analisis }}</div>
+          </div>
         </li>
       </ul>
     </div>
@@ -53,12 +60,24 @@ export default {
     return {
       analisisGPTText: "Análisis no generado aún.",
       isAnalyzing: false,
-      historial: [] // historial de resúmenes
+      historial: [],
+      expandedId: null, // Para manejar expansión de un resumen
     };
   },
   methods: {
+    formatearFecha(fechaISO) {
+      const fecha = new Date(fechaISO);
+      const dia = String(fecha.getDate()).padStart(2, '0');
+      const mes = String(fecha.getMonth() + 1).padStart(2, '0'); // Mes empieza en 0
+      const anio = String(fecha.getFullYear()).slice(-2); // últimos 2 dígitos
+      return `${dia}/${mes}/${anio}`;
+    },
     onClickAnalisis() {
       this.$refs.fileInput.click();
+    },
+
+    toggleExpanded(id) {
+      this.expandedId = this.expandedId === id ? null : id;
     },
 
     async onFileSelected(e) {
@@ -69,46 +88,42 @@ export default {
     },
 
     async uploadAndAnalyze(file) {
-  try {
-    this.isAnalyzing = true;
-    this.analisisGPTText = "Generando análisis...";
+      try {
+        this.isAnalyzing = true;
+        this.analisisGPTText = "Generando análisis...";
 
-    // Tomar el último resumen del historial
-    const ultimoResumen = this.historial.length > 0
-      ? this.historial[0].resumen
-      : "";
+        const ultimoResumen = this.historial.length > 0 ? this.historial[0].resumen : "";
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("regionHierarchy", JSON.stringify(['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy']));
-    formData.append("ultimoResumen", ultimoResumen); // <-- envío del último resumen
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("regionHierarchy", JSON.stringify(['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy']));
+        formData.append("ultimoResumen", ultimoResumen);
 
-    const resp = await axios.post("/analizar", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-      timeout: 120000
-    });
+        const resp = await axios.post("/analizar", formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+          timeout: 120000
+        });
 
-    if (resp.data && resp.data.analysis) {
-      this.analisisGPTText = resp.data.analysis;
+        if (resp.data && resp.data.analysis) {
+          this.analisisGPTText = resp.data.analysis;
 
-      const resumenFinal = this.analisisGPTText.substring(this.analisisGPTText.lastIndexOf("Resumen"));
+          const resumenFinal = this.analisisGPTText.substring(this.analisisGPTText.lastIndexOf("Resumen"));
 
-      // Guardar resumen en DB
-      await axios.post("/guardarResumen", { resumen: resumenFinal });
+          // Guardar análisis + resumen
+          await axios.post("/guardarResumen", { analisis: this.analisisGPTText, resumen: resumenFinal });
 
-      // Actualizar historial
-      await this.fetchHistorial();
-    } else {
-      this.analisisGPTText = "No se recibió un análisis válido del servidor.";
-    }
-  } catch (err) {
-    console.error(err);
-    this.analisisGPTText = "Error al generar el análisis. Revisá la consola del servidor.";
-  } finally {
-    this.isAnalyzing = false;
-  }
-},
-
+          // Actualizar historial
+          await this.fetchHistorial();
+        } else {
+          this.analisisGPTText = "No se recibió un análisis válido del servidor.";
+        }
+      } catch (err) {
+        console.error(err);
+        this.analisisGPTText = "Error al generar el análisis. Revisá la consola del servidor.";
+      } finally {
+        this.isAnalyzing = false;
+      }
+    },
 
     async fetchHistorial() {
       try {
@@ -119,7 +134,7 @@ export default {
       } catch (err) {
         console.error("Error al cargar historial:", err);
       }
-    }
+    },
   },
 
   mounted() {
@@ -130,5 +145,4 @@ export default {
 
 <style scoped>
 /* Mantener estilo simple */
-
 </style>
