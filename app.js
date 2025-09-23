@@ -9,14 +9,13 @@ import OpenAI from 'openai';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
-
+import puppeteer from 'puppeteer';
 dotenv.config();
 const app = express();
 app.use(cors());
 app.use(express.json());
 const upload = multer({ dest: 'uploads/' });
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
 const PORT = process.env.PORT || 3000;
 
 // === Conexión MySQL con pool ===
@@ -46,7 +45,7 @@ async function ocrFile(filePath) {
 }
 
 // === Endpoint: Analizar archivo + historial ===
-app.post('/analizar', upload.single('file'), async (req, res) => {
+app.post('/analizar', upload.single('file'), async(req, res) => {
     const file = req.file;
     if (!file) return res.status(400).json({ error: 'No se subió ningún archivo' });
 
@@ -78,9 +77,8 @@ app.post('/analizar', upload.single('file'), async (req, res) => {
         if (!textContent.trim()) textContent = '(No se pudo extraer texto del archivo).';
 
         // === Preparar prompt ===
-        const regionHierarchy = req.body.regionHierarchy
-            ? JSON.parse(req.body.regionHierarchy)
-            : ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
+        const regionHierarchy = req.body.regionHierarchy ?
+            JSON.parse(req.body.regionHierarchy) : ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
 
         // Tomar último resumen guardado en DB si no se envió desde frontend
         let ultimoResumen = req.body.ultimoResumen || "";
@@ -94,16 +92,18 @@ Analizá profundamente el siguiente contenido extraído del archivo.
 Tomá en cuenta el último resumen previo guardado para generar un análisis más consistente:
 "${ultimoResumen}"
 
-Datos de Consumo Global: información sobre tendencias de consumo regional y nacional,
-precios y promociones, comportamiento del consumidor y estacionalidad.
-Contenido extraído:
----
-${textContent}
----
-Objetivo: identificar oportunidades para aumentar ingresos y optimizar operaciones,
-comparando con jerarquía: ${regionHierarchy.join(' > ')}.
-Devolvé un análisis profundo, incluyendo hallazgos, recomendaciones, priorización por impacto y limitaciones.
-Al final quiero un resumen preciso.
+1. Comenzá con un **resumen ejecutivo** (máx. 5 líneas) con los hallazgos y recomendaciones clave.
+2. Listá los **principales hallazgos** (bullets).
+3. Proponé **recomendaciones accionables** separadas en:
+   - Acciones inmediatas (“quick wins”)
+   - Acciones de mediano plazo
+   - Ejemplos concretos de bundles, promociones o ajustes de surtido.
+4. Priorizá las recomendaciones por impacto (alto, medio, bajo) en una tabla.
+5. Señalá **riesgos, alertas o problemas de datos** detectados.
+6. Contrastá con tendencias y mecánicas de retailers líderes en Argentina.
+7. Finalizá con un **resumen preciso**.
+
+Usá bullets, tablas y lenguaje claro orientado a la toma de decisiones.
 `;
 
         const resp = await openai.responses.create({
@@ -135,7 +135,7 @@ Al final quiero un resumen preciso.
 });
 
 // === Endpoint: Guardar análisis + resumen ===
-app.post('/guardarResumen', async (req, res) => {
+app.post('/guardarResumen', async(req, res) => {
     try {
         const { analisis, resumen } = req.body;
         if (!analisis || !resumen) return res.status(400).json({ error: 'Analisis y resumen requeridos' });
@@ -151,7 +151,7 @@ app.post('/guardarResumen', async (req, res) => {
 });
 
 // === Endpoint: Historial ===
-app.get('/historial', async (req, res) => {
+app.get('/historial', async(req, res) => {
     try {
         const [rows] = await pool.query('SELECT id, analisis, resumen, fecha FROM historial ORDER BY fecha DESC');
         res.json(rows);
@@ -160,5 +160,21 @@ app.get('/historial', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+app.post('/generar-pdf', async(req, res) => {
+    const { html } = req.body;
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
 
+    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    const pdfBuffer = await page.pdf({
+        format: 'A4',
+        printBackground: true,
+        margin: { top: '2.5cm', bottom: '2.5cm', left: '2cm', right: '2cm' }
+    });
+
+    await browser.close();
+    res.set('Content-Type', 'application/pdf');
+    res.send(pdfBuffer);
+});
 app.listen(PORT, () => console.log(`Servidor corriendo en http://localhost:${PORT}`));
