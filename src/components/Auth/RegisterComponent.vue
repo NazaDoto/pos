@@ -2,7 +2,7 @@
   <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
-        Iniciar Sesión
+        Crear Cuenta
       </h2>
 
       <!-- Mensaje de error -->
@@ -10,7 +10,19 @@
         {{ errorMessage }}
       </div>
 
-      <form @submit.prevent="loginUser" class="space-y-5">
+      <form @submit.prevent="registerUser" class="space-y-5">
+        <!-- Nombre -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+          <input
+            type="text"
+            v-model="form.name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+            placeholder="Juan Pérez"
+            required
+          />
+        </div>
+
         <!-- Email -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -41,15 +53,15 @@
           class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition-colors"
           :disabled="loading"
         >
-          <span v-if="loading">Ingresando...</span>
-          <span v-else>Ingresar</span>
+          <span v-if="loading">Registrando...</span>
+          <span v-else>Registrarse</span>
         </button>
       </form>
 
-      <!-- Registro link -->
+      <!-- Login link -->
       <p class="text-sm text-gray-600 mt-6 text-center">
-        ¿No tienes cuenta?
-        <router-link to="/register" class="text-indigo-600 hover:underline">Regístrate</router-link>
+        ¿Ya tienes cuenta?
+        <router-link to="/login" class="text-indigo-600 hover:underline">Inicia sesión</router-link>
       </p>
     </div>
   </div>
@@ -59,10 +71,11 @@
 import axios from "axios";
 
 export default {
-  name: "LoginComponent",
+  name: "RegisterComponent",
   data() {
     return {
       form: {
+        name: "",
         email: "",
         password: "",
       },
@@ -71,18 +84,14 @@ export default {
     };
   },
   methods: {
-    async loginUser() {
+    async registerUser() {
       this.loading = true;
       this.errorMessage = "";
       try {
-        const res = await axios.post("http://localhost:3000/auth/login", this.form);
-        if (res.data.token) {
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("name", JSON.stringify(res.data.name));
-          this.$router.push("/");
-        }
+        await axios.post("http://localhost:3000/auth/register", this.form);
+        this.$router.push("/login");
       } catch (error) {
-        this.errorMessage = error.response?.data?.error || "Error al iniciar sesión";
+        this.errorMessage = error.response?.data?.error || "Error al registrar usuario";
       } finally {
         this.loading = false;
       }

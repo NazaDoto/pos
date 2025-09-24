@@ -1,136 +1,116 @@
 <template>
-    <div class="p-6 space-y-6 h-screen flex flex-col">
+  <div class="p-4 sm:p-6 space-y-6 flex flex-col min-h-screen">
 
-        <div class="text-2xl font-bold">
-            Stock
-        </div>
-        <!-- Resumen de stock -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-            <div class="bg-white p-4 rounded shadow flex flex-col items-center justify-center">
-                <div class="text-sm text-gray-500">Productos totales</div>
-                <div class="text-2xl font-bold">{{ totalProductos }}</div>
-            </div>
-            <div class="bg-white p-4 rounded shadow flex flex-col items-center justify-center">
-                <div class="text-sm text-gray-500">Cantidad total</div>
-                <div class="text-2xl font-bold">{{ totalCantidad }}</div>
-            </div>
-            <div class="bg-white p-4 rounded shadow flex flex-col items-center justify-center">
-                <div class="text-sm text-gray-500">Valor total ($)</div>
-                <div class="text-2xl font-bold">{{ valorTotal }}</div>
-            </div>
-        </div>
+    <!-- Título -->
+    <div class="text-xl sm:text-2xl font-bold">Stock</div>
 
-        <!-- Fila superior: búsqueda, importación y exportación -->
-        <div class="flex flex-wrap items-center gap-4 mb-4">
-            <input v-model="searchTerm" @keyup.enter="buscarProducto" type="text"
-                placeholder="Buscar por código o nombre"
-                class="border rounded px-3 py-2 flex-1 min-w-[200px] focus:ring-2 focus:ring-blue-400" />
-
-            <button @click="buscarProducto"
-                class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-                Buscar
-            </button>
-
-            <button @click="importarExcel"
-                class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
-                Importar Excel
-            </button>
-
-            <button @click="exportarExcel"
-                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition">
-                Exportar Excel
-            </button>
-
-            <select v-model="filtroCategoria" class="border rounded px-3 py-2">
-                <option value="">Todas las categorías</option>
-                <option v-for="cat in categorias" :key="cat" :value="cat">{{ cat }}</option>
-            </select>
-        </div>
-
-        <!-- Contenido principal: panel lateral y tabla -->
-        <div class="flex flex-1 gap-6 overflow-hidden">
-            <!-- Panel lateral -->
-            <div class="w-64 flex-shrink-0 space-y-4 overflow-y-auto">
-                <!-- Productos críticos -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-semibold mb-2">Stock crítico</h3>
-                    <ul class="space-y-1 text-sm">
-                        <li v-for="item in stockCritico" :key="item.codigo" class="flex justify-between">
-                            {{ item.nombre }}
-                            <span class="bg-red-500 text-white px-2 py-0.5 rounded-full">Crítico</span>
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Productos agotados -->
-                <div class="bg-white p-4 rounded shadow">
-                    <h3 class="font-semibold mb-2">Agotados</h3>
-                    <ul class="space-y-1 text-sm">
-                        <li v-for="item in stockAgotado" :key="item.codigo" class="flex justify-between">
-                            {{ item.nombre }}
-                            <span class="bg-gray-700 text-white px-2 py-0.5 rounded-full">0</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Tabla de stock -->
-            <div class="flex-1 flex flex-col bg-white rounded shadow overflow-hidden">
-                <div class="flex-1 overflow-y-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50 sticky top-0 z-10">
-                            <tr>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('codigo')">Código</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('nombre')">Nombre</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('categoria')">Categoría</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('cantidad')">Cantidad</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('precio')">Precio ($)</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer"
-                                    @click="ordenar('stockMinimo')">Stock mínimo</th>
-                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr v-for="item in paginadoItems" :key="item.codigo" class="hover:bg-gray-50 transition">
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ item.codigo }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ item.nombre }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ item.categoria }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800">
-                                    {{ item.cantidad }}
-                                    <span v-if="item.cantidad <= item.stockMinimo"
-                                        class="ml-2 inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">Crítico</span>
-                                </td>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ item.precio }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800">{{ item.stockMinimo }}</td>
-                                <td class="px-4 py-2 text-sm text-gray-800 space-x-2">
-                                    <button class="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500 transition"
-                                        @click="editarItem(item)">Editar</button>
-                                    <button class="bg-red-500 px-2 py-1 rounded text-white hover:bg-red-600 transition"
-                                        @click="eliminarItem(item)">Eliminar</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Paginación siempre abajo -->
-                <div class="flex justify-end items-center mt-2 space-x-2 p-2 bg-gray-50">
-                    <button @click="paginaAnterior" :disabled="pagina === 1"
-                        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Anterior</button>
-                    <span>Página {{ pagina }} de {{ totalPaginas }}</span>
-                    <button @click="paginaSiguiente" :disabled="pagina === totalPaginas"
-                        class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Siguiente</button>
-                </div>
-            </div>
-
-        </div>
+    <!-- Resumen de stock -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="bg-white p-4 rounded shadow flex flex-col items-center justify-center">
+        <div class="text-sm text-gray-500">Productos totales</div>
+        <div class="text-2xl font-bold">{{ totalProductos }}</div>
+      </div>
+      <div class="bg-white p-4 rounded shadow flex flex-col items-center justify-center">
+        <div class="text-sm text-gray-500">Ganancias mensuales ($)</div>
+        <div class="text-2xl font-bold">{{ valorTotal }}</div>
+      </div>
     </div>
+
+    <!-- Búsqueda, importación y exportación -->
+    <div class="flex flex-wrap gap-2 sm:gap-4 mb-4 items-center">
+      <input
+        v-model="searchTerm"
+        @keyup.enter="buscarProducto"
+        type="text"
+        placeholder="Buscar por código o nombre"
+        class="border rounded px-3 py-2 flex-1 min-w-[150px] focus:ring-2 focus:ring-blue-400"
+      />
+
+      <button @click="buscarProducto" class="bg-blue-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-blue-700 transition">Buscar</button>
+      <button @click="importarExcel" class="bg-green-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-green-700 transition">Importar Excel</button>
+      <button @click="exportarExcel" class="bg-indigo-600 text-white px-3 sm:px-4 py-2 rounded hover:bg-indigo-700 transition">Exportar Excel</button>
+
+      <select v-model="filtroCategoria" class="border rounded px-3 py-2">
+        <option value="">Todas las categorías</option>
+        <option v-for="cat in categorias" :key="cat" :value="cat">{{ cat }}</option>
+      </select>
+    </div>
+
+    <!-- Contenido principal -->
+    <div class="flex flex-col md:flex-row flex-1 gap-4 md:gap-6 overflow-hidden">
+
+      <!-- Panel lateral -->
+      <div class="w-full md:w-64 flex-shrink-0 space-y-4 overflow-y-auto">
+        <!-- Stock crítico -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-2">Stock crítico</h3>
+          <ul class="space-y-1 text-sm">
+            <li v-for="item in stockCritico" :key="item.codigo" class="flex justify-between">
+              {{ item.nombre }}
+              <span class="bg-red-500 text-white px-2 py-0.5 rounded-full">Crítico</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Productos agotados -->
+        <div class="bg-white p-4 rounded shadow">
+          <h3 class="font-semibold mb-2">Agotados</h3>
+          <ul class="space-y-1 text-sm">
+            <li v-for="item in stockAgotado" :key="item.codigo" class="flex justify-between">
+              {{ item.nombre }}
+              <span class="bg-gray-700 text-white px-2 py-0.5 rounded-full">0</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Tabla de stock -->
+      <div class="flex-1 flex flex-col bg-white rounded shadow overflow-hidden min-w-0">
+        <div class="flex-1 overflow-x-auto overflow-y-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50 sticky top-0 z-10">
+              <tr>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('codigo')">Código</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('nombre')">Nombre</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('categoria')">Categoría</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('cantidad')">Cantidad</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('precio')">Precio ($)</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700 cursor-pointer" @click="ordenar('stockMinimo')">Stock mínimo</th>
+                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Acciones</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+              <tr v-for="item in paginadoItems" :key="item.codigo" class="hover:bg-gray-50 transition">
+                <td class="px-4 py-2 text-sm text-gray-800">{{ item.codigo }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800">{{ item.nombre }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800">{{ item.categoria }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800">
+                  {{ item.cantidad }}
+                  <span v-if="item.cantidad <= item.stockMinimo" class="ml-2 inline-block bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">Crítico</span>
+                </td>
+                <td class="px-4 py-2 text-sm text-gray-800">{{ item.precio }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800">{{ item.stockMinimo }}</td>
+                <td class="px-4 py-2 text-sm text-gray-800 space-x-2">
+                  <button class="bg-yellow-400 px-2 py-1 rounded hover:bg-yellow-500 transition" @click="editarItem(item)">Editar</button>
+                  <button class="bg-red-500 px-2 py-1 rounded text-white hover:bg-red-600 transition" @click="eliminarItem(item)">Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Paginación -->
+        <div class="flex justify-end items-center mt-2 space-x-2 p-2 bg-gray-50 flex-wrap gap-2">
+          <button @click="paginaAnterior" :disabled="pagina === 1" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Anterior</button>
+          <span>Página {{ pagina }} de {{ totalPaginas }}</span>
+          <button @click="paginaSiguiente" :disabled="pagina === totalPaginas" class="px-3 py-1 bg-gray-200 rounded hover:bg-gray-300">Siguiente</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </template>
+
 
 <script>
 import { Chart, registerables } from "chart.js";

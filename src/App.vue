@@ -14,4 +14,7 @@ canvas {
   width: 100% !important;
   height: 100% !important;
 }
+button{
+  cursor:pointer;
+}
 </style>
