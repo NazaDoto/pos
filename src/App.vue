@@ -17,4 +17,7 @@ canvas {
 button{
   cursor:pointer;
 }
+.h-screen{
+  height: 100svh;
+}
 </style>
