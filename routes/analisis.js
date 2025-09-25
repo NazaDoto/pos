@@ -4,6 +4,8 @@ import fs from 'fs';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import XLSX from 'xlsx';
 import multer from 'multer';
+import fetch from "node-fetch";
+globalThis.fetch = fetch;
 import OpenAI from 'openai';
 import { pool } from '../utils/db.js';
 import { ocrFile } from '../utils/ocr.js';
