@@ -6,7 +6,9 @@ const router = express.Router();
 router.get("/historial", async(req, res) => {
     try {
         const usuarioId = req.query.usuario;
-
+        console.log('req.query: ', req.query)
+        console.log('req.params.id: ', req.params.id)
+        console.log('req.query.usuario: ', usuarioId)
         if (!usuarioId) {
             return res.status(400).json({ error: "Falta el id del usuario" });
         }
