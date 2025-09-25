@@ -82,7 +82,7 @@ export default {
           this.$router.push("/");
         }
       } catch (error) {
-        this.errorMessage = error.response.data || "Error al iniciar sesión";
+        this.errorMessage = error.response.data.error || "Error al iniciar sesión";
       } finally {
         this.loading = false;
       }
