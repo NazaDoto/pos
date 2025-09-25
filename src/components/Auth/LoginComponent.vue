@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+  <div class="flex justify-center bg-gray-100 px-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
         Iniciar Sesión
       </h2>
@@ -75,14 +75,14 @@ export default {
       this.loading = true;
       this.errorMessage = "";
       try {
-        const res = await axios.post("http://localhost:3000/auth/login", this.form);
+        const res = await axios.post("/auth/login", this.form);
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("name", JSON.stringify(res.data.name));
           this.$router.push("/");
         }
       } catch (error) {
-        this.errorMessage = error.response?.data?.error || "Error al iniciar sesión";
+        this.errorMessage = error.data || "Error al iniciar sesión";
       } finally {
         this.loading = false;
       }

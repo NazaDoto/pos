@@ -1,6 +1,6 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+  <div class="flex justify-center bg-gray-100 px-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
         Crear Cuenta
       </h2>
