@@ -1,6 +1,6 @@
 <template>
-  <div class="flex justify-center bg-gray-100 px-4">
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20">
+  <div class="flex justify-center bg-gray-100 px-4 h-screen">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20 h-fit-content">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
         Iniciar Sesión
       </h2>
@@ -90,3 +90,8 @@ export default {
   },
 };
 </script>
+<style>
+.h-fit-content{
+  height: fit-content;
+}
+</style>

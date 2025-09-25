@@ -30,17 +30,17 @@ app.use("/", historialRoutes);
 app.use("/", pdfRoutes);
 
 if (ENV === "prod") {
-  // Rutas a los certificados de Let's Encrypt o ACME
-  const options = {
-    key: fs.readFileSync("/etc/letsencrypt/live/pos.nazadoto.com/privkey.pem"),
-    cert: fs.readFileSync("/etc/letsencrypt/live/pos.nazadoto.com/fullchain.pem"),
-  };
+    // Rutas a los certificados de Let's Encrypt o ACME
+    const options = {
+        key: fs.readFileSync("/etc/letsencrypt/live/pos.nazadoto.com-0001/privkey.pem"),
+        cert: fs.readFileSync("/etc/letsencrypt/live/pos.nazadoto.com-0001/fullchain.pem"),
+    };
 
-  https.createServer(options, app).listen(PORT, () => {
-    console.log(`🚀 Servidor HTTPS corriendo en https://localhost:${PORT}`);
-  });
+    https.createServer(options, app).listen(PORT, () => {
+        console.log(`🚀 Servidor HTTPS corriendo en https://localhost:${PORT}`);
+    });
 } else {
-  app.listen(PORT, () => {
-    console.log(`🚀 Servidor HTTP corriendo en http://localhost:${PORT}`);
-  });
+    app.listen(PORT, () => {
+        console.log(`🚀 Servidor HTTP corriendo en http://localhost:${PORT}`);
+    });
 }
