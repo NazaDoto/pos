@@ -6,17 +6,20 @@
       <h1 class="text-2xl font-bold mb-4">Análisis Inteligente</h1>
 
       <!-- Botones subir + analizar -->
-      <div class="flex flex-col md:flex-row md:items-start md:space-x-4 space-y-2 md:space-y-0">
-        <button @click="$refs.fileInput.click()"
-          class="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-blue-700 transition-colors whitespace-nowrap">
-          Subir archivos
-        </button>
+      <div class="flex flex-col md:items-start md:space-x-4 space-y-2 md:space-y-0">
+        <div class="flex md:flex-row gap-3">
 
-        <button @click="analizarArchivos"
-          class="bg-green-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-green-700 transition-colors whitespace-nowrap"
-          :disabled="archivosSubidos.length === 0 || isAnalyzing">
-          {{ isAnalyzing ? 'Analizando...' : 'Analizar' }}
-        </button>
+          <button @click="$refs.fileInput.click()"
+            class="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-blue-700 transition-colors whitespace-nowrap">
+            Subir archivos
+          </button>
+
+          <button @click="analizarArchivos"
+            class="bg-green-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-green-700 transition-colors whitespace-nowrap"
+            :disabled="archivosSubidos.length === 0 || isAnalyzing">
+            {{ isAnalyzing ? 'Analizando...' : 'Analizar' }}
+          </button>
+        </div>
 
         <p class="text-sm text-gray-500 md:mt-1">
           Sube uno o más archivos y luego clic en "Analizar" para generar el análisis. Formatos soportados: PDF, Excel,
@@ -26,7 +29,7 @@
 
       <!-- Previsualización de archivos subidos -->
       <div v-if="archivosSubidos.length"
-        class="flex flex-wrap gap-3 bg-white p-6 rounded-lg shadow-md max-w-200">
+        class="flex flex-wrap gap-3 bg-white p-6 rounded-lg shadow-md max-ancho-100">
         <div v-for="(file, index) in archivosSubidos" :key="index" class="flex flex-col items-center w-20">
 
           <!-- Miniatura o icono -->
@@ -45,7 +48,7 @@
 
 
       <!-- Sección de análisis completo -->
-      <section class="bg-white p-6 rounded-lg shadow-md max-w-200">
+      <section class="bg-white p-6 rounded-lg shadow-md max-ancho-100">
         <h2 class="font-semibold text-lg mb-3">Análisis generado</h2>
         <div class="relative min-h-[10rem] border rounded-lg overflow-hidden bg-gray-50">
           <div v-html="analisisHtml" class="analisis-markdown h-64 p-4 overflow-auto break-words"></div>
@@ -106,7 +109,7 @@
 <!-- Modal Historial -->
 <transition name="fade">
   <div v-if="modalHistorialAbierto"
-       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
+       class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
        @click.self="cerrarModalHistorial">
     <div class="bg-white rounded-lg shadow-lg max-w-lg w-full max-h-[80vh] overflow-y-auto relative p-6">
       <!-- Botón cerrar -->
@@ -116,7 +119,7 @@
       </button>
 
       <h2 class="text-lg font-semibold mb-4">Detalle del análisis</h2>
-      <div class="text-gray-700 analisis-markdown" v-html="historialSeleccionado?.analisis"></div>
+      <div class="text-gray-700 analisis-markdown" v-html="parseMarkdown(historialSeleccionado?.analisis)"></div>
     </div>
   </div>
 </transition>
@@ -354,16 +357,16 @@ modalHistorialAbierto: false,
 
         this.isAnalyzing = true;
         this.analisisGPTText = 'Generando análisis...';
-  
+
         try {
           const formData = new FormData();
           this.archivosSubidos.forEach(fileObj => formData.append('files[]', fileObj.file));
-  
+
           const resp = await axios.post('/analizar', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
             timeout: 120000,
           });
-  
+
           if (resp.data && resp.data.analysis) {
             this.analisisGPTText = resp.data.analysis;
             // Opcional: limpiar archivos después del análisis
@@ -399,6 +402,9 @@ modalHistorialAbierto: false,
 </script>
 
 <style>
+.bg-opacity-80 {
+  background-color: rgba(0, 0, 0, 0.8);
+}
 body,
 .analisis-markdown {
   font-family: Arial, Helvetica, sans-serif !important;
@@ -421,6 +427,9 @@ body,
 .space-between {
   display: flex;
   justify-content: space-between
+}
+.max-ancho-100 {
+  max-width: 100%;
 }
 .bg-green-600:disabled{
   background-color: #16a34a !important;

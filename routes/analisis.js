@@ -1,7 +1,7 @@
 // filepath: routes/analisis.js
 import express from 'express';
 import fs from 'fs';
-import pdfParse from 'pdf-parse/lib/pdf-parse.js'
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import XLSX from 'xlsx';
 import multer from 'multer';
 import OpenAI from 'openai';
@@ -20,7 +20,7 @@ const openai = new OpenAI({
 });
 
 // === Endpoint: Analizar múltiples archivos + historial ===
-router.post('/analizar', upload.array('files[]'), async (req, res) => {
+router.post('/analizar', upload.array('files[]'), async(req, res) => {
     const files = req.files;
     if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No se subió ningún archivo' });
@@ -40,16 +40,14 @@ router.post('/analizar', upload.array('files[]'), async (req, res) => {
                 const pdfData = await pdfParse(dataBuffer);
                 textContent = pdfData.text || '';
             } else if (
-                mimetype.includes('spreadsheet') ||
-                ['.xlsx', '.xls', '.csv'].includes(getExtFromFilename(file.originalname))
+                mimetype.includes('spreadsheet') || ['.xlsx', '.xls', '.csv'].includes(getExtFromFilename(file.originalname))
             ) {
                 const workbook = XLSX.readFile(filePath);
-                textContent = workbook.SheetNames
-                    .map((s) => XLSX.utils.sheet_to_csv(workbook.Sheets[s]))
-                    .join('\n\n');
+                textContent = workbook.SheetNames.map((s) =>
+                    XLSX.utils.sheet_to_csv(workbook.Sheets[s])
+                ).join('\n\n');
             } else if (
-                mimetype.startsWith('image/') ||
-                ['.png', '.jpg', '.jpeg', '.tiff', '.bmp'].includes(getExtFromFilename(file.originalname))
+                mimetype.startsWith('image/') || ['.png', '.jpg', '.jpeg', '.tiff', '.bmp'].includes(getExtFromFilename(file.originalname))
             ) {
                 textContent = await ocrFile(filePath);
             } else {
@@ -71,9 +69,9 @@ router.post('/analizar', upload.array('files[]'), async (req, res) => {
         }
 
         // === Preparar prompt ===
-        const regionHierarchy = req.body.regionHierarchy
-            ? JSON.parse(req.body.regionHierarchy)
-            : ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
+        const regionHierarchy = req.body.regionHierarchy ?
+            JSON.parse(req.body.regionHierarchy) :
+            ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
 
         let ultimoResumen = req.body.ultimoResumen || '';
         if (!ultimoResumen) {
@@ -106,12 +104,33 @@ Usá bullets, tablas y lenguaje claro orientado a la toma de decisiones.
 
         // === Llamada a OpenAI ===
         const resp = await openai.chat.completions.create({
-            model: 'gpt-5', // o process.env.OPENAI_MODEL
+            model: 'gpt-3.5-turbo', // o process.env.OPENAI_MODEL
             messages: [{ role: 'user', content: prompt }],
         });
 
-        const analysis = resp.choices?.[0]?.message?.content || 'No se obtuvo respuesta del modelo.';
+        let analysis = 'No se obtuvo respuesta del modelo.';
+        if (
+            resp &&
+            resp.choices &&
+            resp.choices[0] &&
+            resp.choices[0].message &&
+            resp.choices[0].message.content
+        ) {
+            analysis = resp.choices[0].message.content;
+        }
+        // === Extraer resumen del análisis ===
+        // Podés mejorar esto según el formato que genere OpenAI.
+        // Por ahora, tomamos las primeras ~5 líneas como "resumen".
+        const resumen = analysis.split('\n').slice(0, 5).join(' ');
 
+        // === Guardar en historial ===
+        try {
+            const sql = 'INSERT INTO historial (analisis, resumen, fecha) VALUES (?, ?, NOW())';
+            await pool.query(sql, [analysis, resumen]);
+            console.log('Análisis guardado en historial ✅');
+        } catch (dbErr) {
+            console.error('Error al guardar en historial:', dbErr);
+        }
         res.json({ analysis });
     } catch (err) {
         console.error('Error en /analizar:', err);

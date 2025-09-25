@@ -5,7 +5,7 @@ import router from "./router"; // si usás vue-router
 import axios from "axios";
 
 // Configuración base de Axios
-axios.defaults.baseURL = "http://localhost:3000/"; // apuntá a tu backend
+axios.defaults.baseURL = "http://192.168.1.15:3000/"; // apuntá a tu backend
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
 // Opcional: podés usar interceptores
