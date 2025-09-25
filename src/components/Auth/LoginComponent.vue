@@ -79,7 +79,6 @@ export default {
         if (res.data.token) {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("name", JSON.stringify(res.data.name));
-          console.log(res.data)
           localStorage.setItem("id", JSON.stringify(res.data.id));
           this.$router.push("/");
         }
