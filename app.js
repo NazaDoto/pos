@@ -32,8 +32,8 @@ app.use("/", pdfRoutes);
 if (ENV === "prod") {
     // Rutas a los certificados de Let's Encrypt o ACME
     const options = {
-        key: fs.readFileSync("/var/www/ssl/nazadoto.key"),
-        cert: fs.readFileSync("/var/www/ssl/nazadoto.crt"),
+        key: fs.readFileSync("/var/www/ssl/nazadoto.com.key"),
+        cert: fs.readFileSync("/var/www/ssl/nazadoto.com.crt"),
     };
 
     https.createServer(options, app).listen(PORT, () => {
