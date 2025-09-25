@@ -88,7 +88,7 @@ export default {
       this.loading = true;
       this.errorMessage = "";
       try {
-        await axios.post("http://localhost:3000/auth/register", this.form);
+        await axios.post("/auth/register", this.form);
         this.$router.push("/login");
       } catch (error) {
         this.errorMessage = error.response?.data?.error || "Error al registrar usuario";
