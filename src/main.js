@@ -3,9 +3,9 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router"; // si usás vue-router
 import axios from "axios";
-
+const dev = "prod"
 // Configuración base de Axios
-axios.defaults.baseURL = "http://192.168.1.182:3000/"; // apuntá a tu backend
+axios.defaults.baseURL = dev == prod ? "https://nazadoto.com:3000" :"http://192.168.1.182:3000/"; // apuntá a tu backend
 axios.defaults.headers.common["Content-Type"] = "application/json";
 
 // Opcional: podés usar interceptores
