@@ -278,7 +278,7 @@ export default {
       if (!html) return '';
 
       // Buscar el apartado "resumen preciso"
-      const regex = /resumen preciso[:\s]*([\s\S]*)/i;
+      const regex = /\b(resumen preciso|resumen)\b[:\s]*([\s\S]*)/i;
       const match = html.match(regex);
 
       let resumenText = '';
