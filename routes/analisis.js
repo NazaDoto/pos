@@ -1,4 +1,6 @@
 // filepath: routes/analisis.js
+import 'undici'; // esto define Headers y fetch globalmente
+
 import express from 'express';
 import fs from 'fs';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
@@ -27,7 +29,7 @@ router.post('/analizar', upload.array('files[]'), async(req, res) => {
     if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No se subió ningún archivo' });
     }
-    const usuarioId = req.body.usuario; // <- aquí está el id
+    const usuarioId = req.body.id; // <- aquí está el id
 
     let combinedText = '';
 
@@ -73,8 +75,7 @@ router.post('/analizar', upload.array('files[]'), async(req, res) => {
 
         // === Preparar prompt ===
         const regionHierarchy = req.body.regionHierarchy ?
-            JSON.parse(req.body.regionHierarchy) :
-            ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
+            JSON.parse(req.body.regionHierarchy) : ['Argentina', 'Tendencias argentinas', 'Qué se consume en argentina hoy'];
 
         let ultimoResumen = req.body.ultimoResumen || '';
         if (!ultimoResumen) {

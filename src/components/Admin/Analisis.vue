@@ -496,7 +496,7 @@ export default {
         try {
           const formData = new FormData();
           this.archivosSubidos.forEach((fileObj) => formData.append('files[]', fileObj.file));
-          formData.append('usuario', localStorage.getItem('id'));
+          formData.append('id', localStorage.getItem('id'));
 
           const resp = await axios.post('/analizar', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
