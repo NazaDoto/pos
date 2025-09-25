@@ -1,6 +1,5 @@
 <template>
   <div class="p-4 sm:p-6 mx-auto space-y-6 md:space-y-0 md:flex md:gap-6 h-full">
-
     <!-- Columna principal: Análisis -->
     <div class="flex flex-col space-y-6 max-h-full md:w-2/3">
       <h1 class="text-2xl font-bold mb-4">Análisis Inteligente</h1>
@@ -8,29 +7,38 @@
       <!-- Botones subir + analizar -->
       <div class="flex flex-col md:items-start md:space-x-4 space-y-2 md:space-y-0">
         <div class="flex md:flex-row gap-3">
-
-          <button @click="$refs.fileInput.click()"
-            class="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-blue-700 transition-colors whitespace-nowrap">
+          <button
+            @click="$refs.fileInput.click()"
+            class="bg-blue-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-blue-700 transition-colors whitespace-nowrap"
+          >
             Subir archivos
           </button>
 
-          <button @click="analizarArchivos"
+          <button
+            @click="analizarArchivos"
             class="bg-green-600 text-white px-4 py-2 rounded w-full md:w-auto shadow-sm hover:shadow-md hover:bg-green-700 transition-colors whitespace-nowrap"
-            :disabled="archivosSubidos.length === 0 || isAnalyzing">
+            :disabled="archivosSubidos.length === 0 || isAnalyzing"
+          >
             {{ isAnalyzing ? 'Analizando...' : 'Analizar' }}
           </button>
         </div>
 
         <p class="text-sm text-gray-500 md:mt-1">
-          Sube uno o más archivos y luego clic en "Analizar" para generar el análisis. Formatos soportados: PDF, Excel,
-          imágenes.
+          Sube uno o más archivos y luego clic en "Analizar" para generar el análisis. Formatos
+          soportados: PDF, Excel, imágenes.
         </p>
       </div>
 
       <!-- Previsualización de archivos subidos -->
-      <div v-if="archivosSubidos.length" class="flex flex-wrap gap-3 bg-white p-6 rounded-lg shadow-md max-ancho-100">
-        <div v-for="(file, index) in archivosSubidos" :key="index" class="flex flex-col items-center w-20">
-
+      <div
+        v-if="archivosSubidos.length"
+        class="flex flex-wrap gap-3 bg-white p-6 rounded-lg shadow-md max-ancho-100"
+      >
+        <div
+          v-for="(file, index) in archivosSubidos"
+          :key="index"
+          class="flex flex-col items-center w-20"
+        >
           <!-- Miniatura o icono -->
           <div class="w-20 h-20 overflow-hidden flex items-center justify-center bg-white">
             <img v-if="file.preview" :src="file.preview" class="object-contain w-full h-full" />
@@ -41,43 +49,77 @@
           <span class="text-xs text-center mt-1 break-words w-full">{{ file.name }}</span>
 
           <!-- Botón eliminar -->
-          <button @click="eliminarArchivo(index)" class="text-red-600 hover:text-red-800 text-xs mt-1">Eliminar</button>
+          <button
+            @click="eliminarArchivo(index)"
+            class="text-red-600 hover:text-red-800 text-xs mt-1"
+          >
+            Eliminar
+          </button>
         </div>
       </div>
-
 
       <!-- Sección de análisis completo -->
       <section class="flex flex-col bg-white p-6 rounded-lg shadow-md max-ancho-100 h-full">
         <h2 class="font-semibold text-lg mb-3">Análisis generado</h2>
         <div class="relative border rounded-lg overflow-hidden bg-gray-50 h-full">
-          <div v-if="analisisGPTText" v-html="resumen(analisisHtml)"
-            class="analisis-markdown p-4 overflow-auto break-words whitespace-auto">
+          <div
+            v-if="analisisGPTText"
+            v-html="resumen(analisisHtml)"
+            class="analisis-markdown p-4 overflow-auto break-words whitespace-auto"
+          ></div>
+          <div
+            v-else
+            class="analisis-markdown opacity-70 p-4 overflow-auto break-words whitespace-auto"
+          >
+            No hay nada generado aún.
           </div>
-          <div v-else class="analisis-markdown opacity-70 p-4 overflow-auto break-words whitespace-auto">No hay nada
-            generado aún.</div>
           <!-- Loading -->
-          <div v-if="isAnalyzing"
-            class="absolute inset-0 bg-white/70 flex flex-col items-center justify-center backdrop-blur-sm">
-            <svg class="animate-spin h-6 w-6 text-green-600 mb-2" xmlns="http://www.w3.org/2000/svg" fill="none"
-              viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"></path>
+          <div
+            v-if="isAnalyzing"
+            class="absolute inset-0 bg-white/70 flex flex-col items-center justify-center backdrop-blur-sm"
+          >
+            <svg
+              class="animate-spin h-6 w-6 text-green-600 mb-2"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              ></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8z"
+              ></path>
             </svg>
-            <span class="text-gray-700 text-sm text-center px-4">
-              Generando análisis...
-            </span>
+            <span class="text-gray-700 text-sm text-center px-4"> Generando análisis... </span>
           </div>
         </div>
-        <div class="flex flex-row items-center justify-end mt-2 gap-3" v-if="analisisHtml && !isAnalyzing">
-          <button class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm w-fit-content"
-            @click="abrirModalHistorial(historial[0])">
+        <div
+          class="flex flex-row items-center justify-end mt-2 gap-3"
+          v-if="analisisHtml && !isAnalyzing"
+        >
+          <button
+            class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm w-fit-content"
+            @click="abrirModalHistorial(historial[0])"
+          >
             Ver análisis completo
           </button>
-          <button @click.stop="descargarPDF(historial[0])"
+          <button
+            @click.stop="descargarPDF(historial[0])"
             class="bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition text-sm w-fit-content"
-            :disabled="loadingPdfId === historial[0].id">
-            <span v-if="loadingPdfId === historial[0].id"
-              class="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full mr-1"></span>
+            :disabled="loadingPdfId === historial[0].id"
+          >
+            <span
+              v-if="loadingPdfId === historial[0].id"
+              class="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full mr-1"
+            ></span>
             {{ loadingPdfId === historial[0].id ? 'Generando...' : 'PDF' }}
           </button>
         </div>
@@ -86,15 +128,20 @@
 
     <!-- Columna secundaria: Historial -->
     <div class="w-full md:w-1/3 flex flex-col space-y-4 max-h-full">
-      <section class="bg-white p-6 rounded-lg shadow-md flex flex-col 
-         h-[400px] overflow-y-auto md:h-full md:overflow-visible">
+      <section
+        class="bg-white p-6 rounded-lg shadow-md flex flex-col h-[400px] overflow-y-auto md:h-full md:overflow-visible"
+      >
         <h2 class="font-semibold text-lg mb-4">Historial de análisis</h2>
 
         <!-- Botón y selector de fecha -->
         <div class="flex flex-row items-center space-x-2 mb-3 space-between">
-          <span class="text-gray-700 text-sm ">Buscar por fecha</span>
+          <span class="text-gray-700 text-sm">Buscar por fecha</span>
 
-          <input type="date" v-model="filtroFecha" class="border border-gray-300 rounded px-2 py-1 text-sm" />
+          <input
+            type="date"
+            v-model="filtroFecha"
+            class="border border-gray-300 rounded px-2 py-1 text-sm"
+          />
         </div>
 
         <div v-if="historialFiltrado.length === 0" class="text-gray-400 text-sm text-center py-6">
@@ -103,63 +150,92 @@
 
         <!-- Contenedor con scroll -->
         <div class="flex-1 overflow-auto max-h-[500px] space-y-2">
-          <div v-for="item in historialFiltrado" :key="item.id"
-            class="rounded-lg border border-gray-200 hover:shadow-sm transition bg-white">
-
+          <div
+            v-for="item in historialFiltrado"
+            :key="item.id"
+            class="rounded-lg border border-gray-200 hover:shadow-sm transition bg-white"
+          >
             <!-- Header del historial con PDF -->
             <div
               class="flex justify-between items-center px-3 py-2 cursor-pointer select-none border-b border-gray-200 bg-gray-50"
-              @click="abrirModalHistorial(item)">
+              @click="abrirModalHistorial(item)"
+            >
               <div class="flex items-center space-x-2">
                 <span class="text-sm text-gray-500">{{ formatearFecha(item.fecha) }}</span>
                 <span class="text-blue-600 font-semibold text-xs">Ver detalle</span>
               </div>
 
               <!-- Botón PDF -->
-              <button @click.stop="descargarPDF(item)"
+              <button
+                @click.stop="descargarPDF(item)"
                 class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition text-xs flex items-center justify-center"
-                :disabled="loadingPdfId === item.id">
-                <span v-if="loadingPdfId === item.id"
-                  class="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full mr-1"></span>
+                :disabled="loadingPdfId === item.id"
+              >
+                <span
+                  v-if="loadingPdfId === item.id"
+                  class="animate-spin h-3 w-3 border-2 border-white border-t-transparent rounded-full mr-1"
+                ></span>
                 {{ loadingPdfId === item.id ? 'Generando...' : 'PDF' }}
               </button>
             </div>
-
           </div>
         </div>
       </section>
     </div>
 
-
     <!-- Modal Historial -->
     <transition name="fade">
-      <div v-if="modalHistorialAbierto"
+      <div
+        v-if="modalHistorialAbierto"
         class="min-h-screen fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80"
-        @click.self="cerrarModalHistorial">
-        <div class="bg-white rounded-lg shadow-lg max-w-200 w-full max-h-[80vh] overflow-y-auto relative p-6">
+        @click.self="cerrarModalHistorial"
+      >
+        <div
+          class="bg-white rounded-lg shadow-lg max-w-200 w-full max-h-[80vh] overflow-y-auto relative p-6"
+        >
           <!-- Botón cerrar -->
-          <button @click="cerrarModalHistorial"
-            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-lg font-bold">
+          <button
+            @click="cerrarModalHistorial"
+            class="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-lg font-bold"
+          >
             ×
           </button>
 
           <h2 class="text-lg font-semibold mb-4">Detalle del análisis</h2>
-          <div class="text-gray-700 analisis-markdown" v-html="parseMarkdown(historialSeleccionado?.analisis)"></div>
+          <div
+            class="text-gray-700 analisis-markdown"
+            v-html="parseMarkdown(historialSeleccionado?.analisis)"
+          ></div>
         </div>
       </div>
     </transition>
 
-
     <!-- Hidden file input -->
-    <input ref="fileInput" type="file" accept="application/pdf,image/*" class="hidden" @change="onFilesSelected" />
+    <input
+      ref="fileInput"
+      type="file"
+      accept="application/pdf,image/*"
+      class="hidden"
+      @change="onFilesSelected"
+    />
 
     <!-- Contenedor oculto para exportar a PDF -->
-    <div v-if="pdfHtml" ref="pdfExport" class="analisis-markdown"
-      style="position: absolute; left: -9999px; top: 0; width: 800px; background: #fff; padding: 32px" v-html="pdfHtml">
-    </div>
+    <div
+      v-if="pdfHtml"
+      ref="pdfExport"
+      class="analisis-markdown"
+      style="
+        position: absolute;
+        left: -9999px;
+        top: 0;
+        width: 800px;
+        background: #fff;
+        padding: 32px;
+      "
+      v-html="pdfHtml"
+    ></div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -180,8 +256,7 @@ export default {
       expandedId: null, // Para manejar expansión de un resumen
       pdfHtml: null, // Nuevo: para renderizar el HTML a exportar
       loadingPdfId: null, // NUEVO: id del historial que se está generando en PDF
-      filtroFecha: "", // formato YYYY-MM-DD
-
+      filtroFecha: '', // formato YYYY-MM-DD
     };
   },
   computed: {
@@ -191,26 +266,26 @@ export default {
     },
     historialFiltrado() {
       if (!this.filtroFecha) return this.historial;
-      return this.historial.filter(item => {
+      return this.historial.filter((item) => {
         // Convertir la fecha del historial a YYYY-MM-DD
-        const fechaItem = new Date(item.fecha).toISOString().split("T")[0];
+        const fechaItem = new Date(item.fecha).toISOString().split('T')[0];
         return fechaItem === this.filtroFecha;
       });
-    }
+    },
   },
   methods: {
     resumen(html) {
-      if (!html) return "";
+      if (!html) return '';
 
       // Buscar el apartado "resumen preciso"
       const regex = /resumen preciso[:\s]*([\s\S]*)/i;
       const match = html.match(regex);
 
-      let resumenText = "";
+      let resumenText = '';
       if (match && match[1]) {
         resumenText = match[1].trim();
       } else {
-        resumenText = "No se encontró el apartado Resumen.";
+        resumenText = 'No se encontró el apartado Resumen.';
       }
 
       const idx = this.historial.length - 1; // último análisis
@@ -218,7 +293,7 @@ export default {
       // Retornar solo el resumen + botón
       return `
     <div class="prose">
-      <p>${resumenText}</p>      
+      <p>${resumenText}</p>
     </div>
   `;
     },
@@ -314,10 +389,14 @@ export default {
 
       // 3. Enviá el HTML al backend
       try {
-        const resp = await axios.post('/generar-pdf', {
-          html: html,
-          title: `Analisis_${this.formatearFecha(item.fecha).replace(/\//g, '-')}`
-        }, { responseType: 'blob' });
+        const resp = await axios.post(
+          '/generar-pdf',
+          {
+            html: html,
+            title: `Analisis_${this.formatearFecha(item.fecha).replace(/\//g, '-')}`,
+          },
+          { responseType: 'blob' }
+        );
 
         // Descarga el PDF como antes
         const url = window.URL.createObjectURL(new Blob([resp.data], { type: 'application/pdf' }));
@@ -381,7 +460,7 @@ export default {
       const files = e.target.files;
       if (!files) return;
 
-      Array.from(files).forEach(file => {
+      Array.from(files).forEach((file) => {
         const fileObj = { file, name: file.name, preview: null };
 
         // Solo generar preview si es imagen
@@ -406,19 +485,18 @@ export default {
       this.archivosSubidos.splice(index, 1);
     },
 
-
     async analizarArchivos() {
       if (this.archivosSubidos.length === 0) {
         await console.log('No hay archivos para analizar');
         alert('Por favor, subí al menos un archivo para analizar.');
       } else {
-
         this.isAnalyzing = true;
         this.analisisGPTText = 'Generando análisis...';
 
         try {
           const formData = new FormData();
-          this.archivosSubidos.forEach(fileObj => formData.append('files[]', fileObj.file));
+          this.archivosSubidos.forEach((fileObj) => formData.append('files[]', fileObj.file));
+          formData.append('usuario', localStorage.getItem('id'));
 
           const resp = await axios.post('/analizar', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -445,7 +523,9 @@ export default {
 
     async fetchHistorial() {
       try {
-        const resp = await axios.get('/historial');
+        const resp = await axios.get('/historial', {
+          params: { usuario: localStorage.getItem('id') },
+        });
         if (resp.data && Array.isArray(resp.data)) this.historial = resp.data;
       } catch (err) {
         console.error(err);
@@ -458,7 +538,6 @@ export default {
     window.__abrirAnalisisModal = () => {
       this.abrirModalHistorial(this.historial[0]);
     };
-
   },
 };
 </script>
@@ -506,7 +585,6 @@ body,
   font-size: 1rem;
   color: #222;
   text-align: justify;
-
 }
 
 .analisis-markdown table {
@@ -521,7 +599,7 @@ body,
 
 .space-between {
   display: flex;
-  justify-content: space-between
+  justify-content: space-between;
 }
 
 .max-ancho-100 {

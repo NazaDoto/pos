@@ -4,7 +4,7 @@ import fs from 'fs';
 import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import XLSX from 'xlsx';
 import multer from 'multer';
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 globalThis.fetch = fetch;
 import OpenAI from 'openai';
 import { pool } from '../utils/db.js';
@@ -27,6 +27,7 @@ router.post('/analizar', upload.array('files[]'), async(req, res) => {
     if (!files || files.length === 0) {
         return res.status(400).json({ error: 'No se subió ningún archivo' });
     }
+    const usuarioId = req.body.usuario; // <- aquí está el id
 
     let combinedText = '';
 
@@ -127,8 +128,9 @@ Usá bullets, tablas y lenguaje claro orientado a la toma de decisiones.
 
         // === Guardar en historial ===
         try {
-            const sql = 'INSERT INTO historial (analisis, resumen, fecha) VALUES (?, ?, NOW())';
-            await pool.query(sql, [analysis, resumen]);
+            const sql =
+                'INSERT INTO historial (usuario, analisis, resumen, fecha) VALUES (?, ?, ?, NOW())';
+            await pool.query(sql, [usuarioId, analysis, resumen]);
             console.log('Análisis guardado en historial ✅');
         } catch (dbErr) {
             console.error('Error al guardar en historial:', dbErr);

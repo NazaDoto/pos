@@ -6,15 +6,14 @@ import jwt from "jsonwebtoken";
 const router = express.Router();
 
 // === Registro de usuarios ===
-router.post("/register", async (req, res) => {
+router.post("/register", async(req, res) => {
     const { name, email, password } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool.query(
-            "INSERT INTO usuarios (name, email, password, habilitado) VALUES (?, ?, ?, 0)",
-            [name, email, hashedPassword]
+            "INSERT INTO usuarios (name, email, password, habilitado) VALUES (?, ?, ?, 0)", [name, email, hashedPassword]
         );
 
         res.json({ message: "Usuario registrado. Espera aprobación de un administrador." });
@@ -26,7 +25,7 @@ router.post("/register", async (req, res) => {
 
 
 // === Login de usuarios ===
-router.post("/login", async (req, res) => {
+router.post("/login", async(req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -47,16 +46,15 @@ router.post("/login", async (req, res) => {
             return res.status(400).json({ error: "Contraseña incorrecta" });
         }
 
-        const token = jwt.sign(
-            { id: user.id, email: user.email },
-            process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+        const token = jwt.sign({ id: user.id, email: user.email },
+            process.env.JWT_SECRET, { expiresIn: "1h" }
         );
 
         res.json({
             message: "Login exitoso",
             token,
-            name: user.name  // 🔹 clave: valor
+            name: user.name, // 🔹 clave: valor
+            id: user.id
         });
     } catch (error) {
         console.error(error);

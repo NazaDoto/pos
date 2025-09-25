@@ -2,10 +2,12 @@ CREATE DATABASE `pos` /*!40100 DEFAULT CHARACTER SET latin1 */;
 use pos;
 CREATE TABLE `historial` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `usuario` int(11),
   `analisis` longtext NOT NULL,
   `resumen` longtext NOT NULL,
   `fecha` datetime DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+FOREIGN KEY (`usuario`) REFERENCES `usuarios`(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
 CREATE TABLE `productos` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
