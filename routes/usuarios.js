@@ -4,36 +4,35 @@ const router = express.Router();
 
 // === Obtener todos los usuarios ===
 router.get("/fetchUsuarios", async (req, res) => {
-  try {
-    const [rows] = await pool.query("SELECT id, name, email, nivel, habilitado, fecha_activacion FROM usuarios");
-    res.json(rows);
-  } catch (error) {
-    console.error("Error al obtener usuarios:", error);
-    res.status(500).json({ error: "Error al obtener usuarios" });
-  }
+    try {
+        const [rows] = await pool.query("SELECT id, name, email, nivel, habilitado, fecha_activacion FROM usuarios");
+        res.json(rows);
+    } catch (error) {
+        console.error("Error al obtener usuarios:", error);
+        res.status(500).json({ error: "Error al obtener usuarios" });
+    }
 });
 
 // === Actualizar un usuario ===
 router.put("/updateUsuario", async (req, res) => {
-  const { id, name, email, nivel, habilitado} = req.body;
+    const { id, name, email, nivel, habilitado } = req.body;
 
-  if (!id) {
-    return res.status(400).json({ error: "Falta el ID del usuario" });
-  }
+    if (!id) {
+        return res.status(400).json({ error: "Falta el ID del usuario" });
+    }
 
-  try {
-    await pool.query(
-      `UPDATE usuarios 
-       SET name = ?, email = ?, nivel = ?, habilitado = ?, 
-       WHERE id = ?`,
-      [name, email, nivel, habilitado,  id]
-    );
+    try {
+        await pool.query(
+            `UPDATE usuarios 
+       SET name = ?, email = ?, nivel = ?, habilitado = ?, WHERE id = ?`,
+            [name, email, nivel, habilitado, id]
+        );
 
-    res.json({ message: "Usuario actualizado correctamente" });
-  } catch (error) {
-    console.error("Error al actualizar usuario:", error);
-    res.status(500).json({ error: "Error al actualizar usuario" });
-  }
+        res.json({ message: "Usuario actualizado correctamente" });
+    } catch (error) {
+        console.error("Error al actualizar usuario:", error);
+        res.status(500).json({ error: "Error al actualizar usuario" });
+    }
 });
 // === Activar cuenta de usuario (+30 días) ===
 router.put("/activarUsuario", async (req, res) => {
