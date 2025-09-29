@@ -15,7 +15,7 @@ router.get("/fetchUsuarios", async (req, res) => {
 
 // === Actualizar un usuario ===
 router.put("/updateUsuario", async (req, res) => {
-  const { id, name, email, nivel, habilitado, fecha_activacion } = req.body;
+  const { id, name, email, nivel, habilitado} = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "Falta el ID del usuario" });
@@ -24,9 +24,9 @@ router.put("/updateUsuario", async (req, res) => {
   try {
     await pool.query(
       `UPDATE usuarios 
-       SET name = ?, email = ?, nivel = ?, habilitado = ?, fecha_activacion = ?
+       SET name = ?, email = ?, nivel = ?, habilitado = ?, 
        WHERE id = ?`,
-      [name, email, nivel, habilitado, fecha_activacion || null, id]
+      [name, email, nivel, habilitado,  id]
     );
 
     res.json({ message: "Usuario actualizado correctamente" });
