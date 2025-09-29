@@ -7,13 +7,13 @@ const router = express.Router();
 
 // === Registro de usuarios ===
 router.post("/register", async(req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, nivel } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool.query(
-            "INSERT INTO usuarios (name, email, password, habilitado) VALUES (?, ?, ?, 0)", [name, email, hashedPassword]
+            "INSERT INTO usuarios (name, email, password, nivel, habilitado) VALUES (?, ?, ?, ?, 0)", [name, email, hashedPassword, nivel]
         );
 
         res.json({ message: "Usuario registrado. Espera aprobación de un administrador." });
@@ -54,7 +54,8 @@ router.post("/login", async(req, res) => {
             message: "Login exitoso",
             token,
             name: user.name, // 🔹 clave: valor
-            id: user.id
+            id: user.id,
+            nivel: user.nivel
         });
     } catch (error) {
         console.error(error);

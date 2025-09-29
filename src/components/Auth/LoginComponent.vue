@@ -1,5 +1,5 @@
 <template>
-  <div class="flex justify-center bg-gray-100 px-4 h-screen">
+  <div class="flex justify-center bg-gray-100 px-4 h-screen bg-gradient-to-r from-blue-600 to-indigo-700">
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20 h-fit-content">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
         Iniciar Sesión
@@ -10,7 +10,7 @@
         {{ errorMessage }}
       </div>
 
-      <form @submit.prevent="loginUser" class="space-y-5">
+      <form @submit.prevent="loginUser" class="space-y-5 ">
         <!-- Email -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
@@ -80,10 +80,11 @@ export default {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("name", JSON.stringify(res.data.name));
           localStorage.setItem("id", JSON.stringify(res.data.id));
-          this.$router.push("/");
+          localStorage.setItem("nivel", JSON.stringify(res.data.nivel));
+          this.$router.push("/home");
         }
       } catch (error) {
-        this.errorMessage = error.response.data.error || "Error al iniciar sesión";
+        this.errorMessage = error.response?.data.error || "Error al iniciar sesión";
       } finally {
         this.loading = false;
       }

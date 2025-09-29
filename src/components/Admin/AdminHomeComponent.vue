@@ -19,7 +19,7 @@
             <nav class="flex-1 flex-column p-1 sm:p-2">
                 <ul class="space-y-2">
                     <li>
-                        <RouterLink to="/inicio" class="block py-2 rounded hover:bg-gray-200 transition"
+                        <RouterLink to="/home" class="block py-2 rounded hover:bg-gray-200 transition"
                             active-class="bg-gray-300 font-semibold">
                             <span v-if="!isCollapsed" class="ml-2">Inicio</span>
                             <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mx-auto" fill="none"
@@ -68,7 +68,7 @@ export default {
         },
         logout() {
             localStorage.removeItem('token'); // o cualquier otro dato de sesión
-            window.location.href = '/login'; // redirigir al login
+            window.location.href = '/'; // redirigir al login
         },
         handleResize() {
             if (window.innerWidth < 768) { // sm breakpoint de Tailwind
