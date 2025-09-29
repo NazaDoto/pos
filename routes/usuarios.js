@@ -24,7 +24,7 @@ router.put("/updateUsuario", async (req, res) => {
     try {
         await pool.query(
             `UPDATE usuarios 
-       SET name = ?, email = ?, nivel = ?, habilitado = ?, WHERE id = ?`,
+       SET name = ?, email = ?, nivel = ?, habilitado = ? WHERE id = ?`,
             [name, email, nivel, habilitado, id]
         );
 
