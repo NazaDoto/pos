@@ -3,9 +3,10 @@ import { createRouter, createWebHistory } from 'vue-router'
 // Importar componentes
 import Login from '../components/Auth/LoginComponent.vue'
 import RegisterComponent from '../components/Auth/RegisterComponent.vue'
-import AdminHome from '../components/Admin/AdminHomeComponent.vue'
-import Analisis from '@/components/Admin/Analisis.vue'
+import UsuarioHome from '../components/Usuario/UsuarioHomeComponent.vue'
+import Analisis from '@/components/Usuario/Analisis.vue'
 import Landing from '@/components/Landing.vue' // 👈 Nueva landing
+import Admin from '@/components/Admin/AdminComponent.vue'
 
 const routes = [
     {
@@ -27,8 +28,14 @@ const routes = [
         meta: { guest: true }
     },
     {
+        path: '/admin',
+        name: 'Admin',
+        component: Admin,
+        meta: { requiresAuth: true }
+    },
+    {
         path: '/home',
-        component: AdminHome, // Layout con sidebar
+        component: UsuarioHome, // Layout con sidebar
         meta: { requiresAuth: true },
         children: [
             {
@@ -46,9 +53,12 @@ const routes = [
         path: '/:catchAll(.*)',
         redirect: () => {
             const token = localStorage.getItem('token')
-            return token ? '/home' : '/login'
+            const nivel = JSON.parse(localStorage.getItem('nivel'))
+            if (!token) return '/login'
+            return nivel === 1 ? '/admin' : '/home'
         }
     }
+
 ]
 
 const router = createRouter({
@@ -59,10 +69,12 @@ const router = createRouter({
 // === Navigation Guards ===
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
+    const nivel = JSON.parse(localStorage.getItem('id')) // obtener nivel o id
 
-    // Si está logueado y quiere ir a login/register → redirigir al /home
+    // Si está logueado y quiere ir a login/register → redirigir al /home o /admin
     if (token && to.meta.guest && (to.name === 'Login' || to.name === 'Register')) {
-        return next('/home')
+        if (nivel === 1) return next('/admin') // admin
+        return next('/home') // usuario normal
     }
 
     // Si requiere auth y no está logueado → redirigir a login
@@ -70,7 +82,15 @@ router.beforeEach((to, from, next) => {
         return next('/login')
     }
 
+    // 🚨 Protección de ruta admin
+    if (to.path === '/admin') {
+        if (!token || nivel !== 1) {
+            return next('/home') // Redirige usuarios normales
+        }
+    }
+
     next()
 })
+
 
 export default router

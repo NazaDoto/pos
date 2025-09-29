@@ -10,6 +10,7 @@ import historialRoutes from "./routes/historial.js";
 import pdfRoutes from "./routes/pdf.js";
 import authRoutes from "./routes/auth.js";
 import analisisRoutes from "./routes/analisis.js";
+import usuariosRoutes from "./routes/usuarios.js";
 
 dotenv.config();
 
@@ -24,6 +25,7 @@ const ENV = process.env.ENV || "dev"; // "dev" o "prod"
 
 // === Rutas ===
 app.use("/auth", authRoutes);
+app.use("/", usuariosRoutes);
 app.use("/", analisisRoutes);
 app.use("/", resumenRoutes);
 app.use("/", historialRoutes);
