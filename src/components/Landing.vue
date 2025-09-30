@@ -58,7 +58,7 @@
                 <div class="grid md:grid-cols-3 gap-8">
                     <!-- Nivel 1 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col">
-                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 1</h4>
+                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 1 - Básico</h4>
                         <p class="text-gray-600 mb-6">$20.000 / mes</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-3.5</li>
@@ -66,7 +66,7 @@
                             <li>✔️ Recomendaciones generales para ventas</li>
                         </ul>
                         <router-link :to="{ path: '/register', query: { nivel: 1 } }"
-                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-blue-600 text-white font-semibold hover:bg-blue-700 transition">
+                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-blue-500 text-white font-semibold hover:bg-blue-600 transition">
                             Elegir Nivel 1
                         </router-link>
                         <button class="text-blue-600 hover:text-blue-800 transition font-medium mt-2"
@@ -75,7 +75,7 @@
 
                     <!-- Nivel 2 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col border-2 border-blue-600">
-                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 2</h4>
+                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 2 - Avanzado</h4>
                         <p class="text-gray-600 mb-6">$35.000 / mes</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-4</li>
@@ -84,7 +84,7 @@
                             <li>✔️ Reportes interactivos y detallados</li>
                         </ul>
                         <router-link :to="{ path: '/register', query: { nivel: 2 } }"
-                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-green-400 text-white font-semibold hover:bg-green-500 transition">
                             Elegir Nivel 2
                         </router-link>
                         <button class="text-blue-600 hover:text-blue-800 transition font-medium mt-2"
@@ -94,7 +94,7 @@
 
                     <!-- Nivel 3 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col ">
-                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 3</h4>
+                        <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 3 - Profesional</h4>
                         <p class="text-gray-600 mb-6">$50.000 / mes</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-5</li>
@@ -105,7 +105,7 @@
                             <li>✔️ Soporte premium y asistencia personalizada</li>
                         </ul>
                         <router-link :to="{ path: '/register', query: { nivel: 3 } }"
-                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-green-600 text-white font-semibold hover:bg-green-700 transition">
+                            class="mt-auto block text-center px-6 py-3 rounded-lg bg-yellow-400 text-white font-semibold hover:bg-yellow-500 transition">
                             Elegir Nivel 3
                         </router-link>
                         <button class="text-blue-600 hover:text-blue-800 transition font-medium mt-2"
@@ -128,6 +128,7 @@
           </button>
 
           <h2 class="text-lg font-semibold mb-4 text-center">Ejemplo de Análisis Nivel {{ nivelSeleccionado }}</h2>
+          <p class="text-center"><i>Se utilizó el mismo ranking de ventas semanal de un comercio mediano para los 3 ejemplos.</i></p>
           <div class="text-gray-700 analisis-markdown" v-html="parseMarkdown(textoEjemplo)"></div>
         </div>
       </div>
@@ -153,37 +154,37 @@ export default {
             ejemplos: {
                 1: `**Resumen sencillo:**
  El archivo analiza el ranking de ventas de diferentes productos en Argentina, mostrando las unidades vendidas, ventas acumuladas y porcentajes de venta de cada uno de ellos.
- 
+
  **Principales hallazgos:**
  - El producto más vendido es el "PRIMORDIAL AC GIRASOL 700 ML", con ventas acumuladas de 430 unidades.
  - Los productos que le siguen en venta son vinos, cerveza, quesos, leche, azúcar, entre otros.
  - Hay una variedad de productos de consumo diario y de variedad, mostrando una diversidad en las preferencias de los consumidores argentinos.
- 
+
  **Recomendaciones:**
- 1. Crear bundles o promociones: 
+ 1. Crear bundles o promociones:
     - Ofrecer un bundle de "EL CASTIGO MALBEC 750 ML" junto con "MOZZARI BURRATA" a un precio especial para fomentar la compra cruzada de vino y queso.
-   
+
  2. Ajustar el surtido:
     - Dado el alto volumen de ventas de "PRIMORDIAL AC GIRASOL 700 ML", se puede considerar aumentar la visibilidad en la tienda mediante displays especiales o promociones destacadas.
- 
+
  3. Promover productos de baja rotación:
     - Realizar promociones puntuales en productos menos vendidos como "ACAPULCO CHOCLO AMAR 300 GR" para aumentar su rotación y visibilidad en el mercado.`,
-                2: `**Resumen ejecutivo:** 
- El contenido es un informe que detalla el ranking de ventas en Argentina. Aparentemente, los productos más vendidos son el aceite PRIMORDIAL AC GIRASOL y el vino EL CASTIGO MALBEC. También se pueden identificar tendencias en alimentos básicos como azúcar y quesos. 
- 
- 1. Principales hallazgos: 
+                2: `**Resumen ejecutivo:**
+ El contenido es un informe que detalla el ranking de ventas en Argentina. Aparentemente, los productos más vendidos son el aceite PRIMORDIAL AC GIRASOL y el vino EL CASTIGO MALBEC. También se pueden identificar tendencias en alimentos básicos como azúcar y quesos.
+
+ 1. Principales hallazgos:
      - El producto más vendido es el aceite de girasol PRIMORDIAL.
      - El segundo producto más vendido es vino MALBEC.
      - Hay una variedad de bebidas, alimentos y comestibles en la lista de ventas.
      - Se venden más alimentos como la burrata y fiambre que agua mineral.
      - Se puede encontrar conglomerado de unidades de venta de distintos precentajes en el ranking.
      - Coca cola y sus variantes tienen niveles de venta similares en la lista.
- 
- 2. Recomendaciones accionables: 
+
+ 2. Recomendaciones accionables:
      - **Rápidas**: Aumentar la promoción de los productos más vendidos como aceite de girasol PRIMORDIAL y vino EL CASTIGO MALBEC para aprovechar su popularidad.
      - **De mediano plazo**: Observar las ventas de Coca Cola y sus variantes para considerar ofertas conjuntas que podrían aumentar las ventas de estas bebidas. Explorar la posibilidad de crear ofertas de productos que se venden juntos regularmente, como queso y vino. Evaluar la posibilidad de modificar el surtido de productos para incrementar las ventas de productos que tienen menor turno en las ventas.
- 
- **Resumen:** 
+
+ **Resumen:**
  Podemos ver que en Argentina, ciertos productos tienen mayor aceptación en el mercado que otros. A corto plazo, se podría optimizar la promoción de productos más vendidos, como el aceite de girasol PRIMORDIAL y el vino EL CASTIGO MALBEC. A medio plazo, hay que poner énfasis en la variación de las ventas de productos que pertenecen a una misma marca, como Coca Cola, y considerar la implementación de ofertas conjuntas para incrementar las ventas. Además, sería útil readaptar los surtidos y mejorar la variedad de productos que tienen un menor rendimiento en las ventas.`,
                 3: `1) **Resumen ejecutivo**
 - El ranking confirma una canasta dual: alto volumen en básicos (aceite, azúcar, pastas, agua/sodas) y alto ticket en indulgencias/premium (vino, cervezas importadas, quesos especiales, “picada”).

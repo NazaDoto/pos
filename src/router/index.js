@@ -8,8 +8,7 @@ import Analisis from '@/components/Usuario/Analisis.vue'
 import Landing from '@/components/Landing.vue' // 👈 Nueva landing
 import Admin from '@/components/Admin/AdminComponent.vue'
 
-const routes = [
-    {
+const routes = [{
         path: '/',
         name: 'Landing',
         component: Landing,
@@ -37,8 +36,7 @@ const routes = [
         path: '/home',
         component: UsuarioHome, // Layout con sidebar
         meta: { requiresAuth: true },
-        children: [
-            {
+        children: [{
                 path: '',
                 name: 'Analizar',
                 component: Analisis
@@ -69,7 +67,7 @@ const router = createRouter({
 // === Navigation Guards ===
 router.beforeEach((to, from, next) => {
     const token = localStorage.getItem('token')
-    const nivel = JSON.parse(localStorage.getItem('id')) // obtener nivel o id
+    const nivel = JSON.parse(localStorage.getItem('id') || null) // obtener nivel o id
 
     // Si está logueado y quiere ir a login/register → redirigir al /home o /admin
     if (token && to.meta.guest && (to.name === 'Login' || to.name === 'Register')) {

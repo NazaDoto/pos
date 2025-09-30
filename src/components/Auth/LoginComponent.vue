@@ -1,5 +1,15 @@
 <template>
   <div class="flex justify-center bg-gray-100 px-4 h-screen bg-gradient-to-r from-blue-600 to-indigo-700">
+    <!-- Botón Volver -->
+<router-link
+  to="/"
+  class="absolute top-4 left-4 flex items-center gap-2 px-4 py-2 bg-white text-gray-700 rounded-lg shadow hover:bg-gray-100 transition-colors"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+  </svg>
+  <span class="text-sm font-medium">Volver</span>
+</router-link>
     <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 py-10 mt-20 h-fit-content">
       <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
         Iniciar Sesión

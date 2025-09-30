@@ -10,7 +10,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
           viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0
             01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"/>
         </svg>
         Cerrar Sesión
@@ -77,7 +77,7 @@
               </td>
               <td class="px-6 py-4 text-center">
                 <span
-                  :class="esCuentaActiva(usuario.fecha_activacion) 
+                  :class="esCuentaActiva(usuario.fecha_activacion)
                     ? 'bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium'
                     : 'bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-medium'"
                 >
