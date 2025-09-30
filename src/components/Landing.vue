@@ -59,7 +59,7 @@
                     <!-- Nivel 1 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col">
                         <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 1 - Básico</h4>
-                        <p class="text-gray-600 mb-6">$20.000 / mes</p>
+                        <p class="text-gray-600 mb-6">$25.000 / 30 días</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-3.5</li>
                             <li>✔️ Análisis básico de informes</li>
@@ -76,7 +76,7 @@
                     <!-- Nivel 2 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col border-2 border-blue-600">
                         <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 2 - Avanzado</h4>
-                        <p class="text-gray-600 mb-6">$35.000 / mes</p>
+                        <p class="text-gray-600 mb-6">$35.000 / 30 días</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-4</li>
                             <li>✔️ Análisis avanzado con más precisión</li>
@@ -95,7 +95,7 @@
                     <!-- Nivel 3 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col ">
                         <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 3 - Profesional</h4>
-                        <p class="text-gray-600 mb-6">$50.000 / mes</p>
+                        <p class="text-gray-600 mb-6">$50.000 / 30 días</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-5</li>
                             <li>✔️ Análisis predictivo con IA de última generación</li>

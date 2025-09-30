@@ -20,22 +20,21 @@ const transporter = nodemailer.createTransport({
 
 
 // === Registro de usuarios ===
-router.post("/register", async (req, res) => {
+router.post("/register", async(req, res) => {
     const { name, email, password, nivel } = req.body;
 
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         await pool.query(
-            "INSERT INTO usuarios (name, email, password, nivel, habilitado) VALUES (?, ?, ?, ?, 0)",
-            [name, email, hashedPassword, nivel]
+            "INSERT INTO usuarios (name, email, password, nivel, habilitado) VALUES (?, ?, ?, ?, 0)", [name, email, hashedPassword, nivel]
         );
 
         // Configurar correo HTML
         let amount, nivelText;
 
         if (nivel == "1") {
-            amount = "$20.000";
+            amount = "$25.000";
             nivelText = "Nivel 1";
         } else if (nivel == "2") {
             amount = "$35.000";
@@ -149,7 +148,7 @@ router.post("/register", async (req, res) => {
 
 // === Login de usuarios ===
 // === Login de usuarios ===
-router.post("/login", async (req, res) => {
+router.post("/login", async(req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -176,7 +175,7 @@ router.post("/login", async (req, res) => {
                 let amount, nivelText;
 
                 if (user.nivel == "1") {
-                    amount = "$20.000";
+                    amount = "$25.000";
                     nivelText = "Nivel 1";
                 } else if (user.nivel == "2") {
                     amount = "$35.000";
