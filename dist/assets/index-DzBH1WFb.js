@@ -263,7 +263,7 @@ Ejemplos concretos de bundles, promociones o ajustes de surtido
 | Optimización surtido quesos (premium vs masivo) | Mediano      | Medio   | Medio    | Mejora margen mix y reduce quiebres en alta rotación.       |
 | Packs retornables y multipacks                  | Mediano      | Medio   | Bajo     | Mejora valor percibido y frecuencia de compra.              |
 | Omnicanal: combos y suscripción de aguas        | Mediano      | Medio   | Medio    | Incrementa recurrencia y simplifica reposición del hogar.   |
-| Tablero de margen y alertas de anomalías        | Mediano      | Medio   | Medio    | Sustenta pricing/promos y control de pérdidas.              |
+| Tablero de margen y alertas de anomalías        | Mediano      | Medio   | Medio    | Sustenta pricing/promos y control de pérdidas.
 
 5) **Riesgos, alertas o problemas de datos**
 - Fechas inconsistentes (período “Desde 15/0/2026 hasta 20/0/2025”) y posible corte de ventana.
