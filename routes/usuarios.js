@@ -36,7 +36,7 @@ router.put("/updateUsuario", async (req, res) => {
 });
 
 // Endpoint: /cambiarPASS
-app.put("/cambiarPASS", async (req, res) => {
+router.put("/cambiarPASS", async (req, res) => {
   const { actual, nueva, userId } = req.body;
 
   try {
