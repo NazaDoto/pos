@@ -64,9 +64,9 @@
             v-model="form.nivel"
             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
           >
-            <option value="1">Nivel 1 - ChatGPT 3.5 (básico)</option>
-            <option value="2">Nivel 2 - ChatGPT 4 (avanzado)</option>
-            <option value="3">Nivel 3 - ChatGPT 5 (premium)</option>
+            <option value="1">Nivel 1 - ChatGPT 3.5 (Básico)</option>
+            <option value="2">Nivel 2 - ChatGPT 4 (Avanzado)</option>
+            <option value="3">Nivel 3 - ChatGPT 5 (Profesional)</option>
           </select>
         </div>
 
