@@ -35,26 +35,45 @@ router.put("/updateUsuario", async (req, res) => {
     }
 });
 
-// Endpoint: /cambiarPASS
+// === Cambiar contraseña ===
 router.put("/cambiarPASS", async (req, res) => {
   const { actual, nueva, userId } = req.body;
 
+  if (!userId || !actual || !nueva) {
+    return res.status(400).json({ error: "Faltan datos" });
+  }
+
   try {
-    const user = await db("usuarios").where({ id: userId }).first();
-    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+    // 1. Obtener usuario
+    const [rows] = await pool.query(
+      "SELECT password FROM usuarios WHERE id = ?",
+      [userId]
+    );
 
-    // Verificar contraseña actual
+    if (rows.length === 0) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    const user = rows[0];
+
+    // 2. Verificar contraseña actual
     const match = await bcrypt.compare(actual, user.password);
-    if (!match) return res.status(400).json({ error: "Contraseña actual incorrecta" });
+    if (!match) {
+      return res.status(400).json({ error: "Contraseña actual incorrecta" });
+    }
 
-    // Hashear nueva contraseña
+    // 3. Hashear la nueva contraseña
     const hashed = await bcrypt.hash(nueva, 10);
 
-    await db("usuarios").where({ id: userId }).update({ password: hashed });
+    // 4. Actualizar en DB
+    await pool.query("UPDATE usuarios SET password = ? WHERE id = ?", [
+      hashed,
+      userId,
+    ]);
 
     res.json({ message: "Contraseña actualizada con éxito" });
   } catch (err) {
-    console.error(err);
+    console.error("Error en /cambiarPASS:", err);
     res.status(500).json({ error: "Error al cambiar contraseña" });
   }
 });
