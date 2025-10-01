@@ -34,6 +34,33 @@ router.put("/updateUsuario", async (req, res) => {
         res.status(500).json({ error: "Error al actualizar usuario" });
     }
 });
+
+// Endpoint: /cambiarPASS
+app.put("/cambiarPASS", async (req, res) => {
+  const { actual, nueva, userId } = req.body;
+
+  try {
+    const user = await db("usuarios").where({ id: userId }).first();
+    if (!user) return res.status(404).json({ error: "Usuario no encontrado" });
+
+    // Verificar contraseña actual
+    const match = await bcrypt.compare(actual, user.password);
+    if (!match) return res.status(400).json({ error: "Contraseña actual incorrecta" });
+
+    // Hashear nueva contraseña
+    const hashed = await bcrypt.hash(nueva, 10);
+
+    await db("usuarios").where({ id: userId }).update({ password: hashed });
+
+    res.json({ message: "Contraseña actualizada con éxito" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al cambiar contraseña" });
+  }
+});
+
+
+
 // === Activar cuenta de usuario (+30 días) ===
 router.put("/activarUsuario", async (req, res) => {
     const { id } = req.body;
