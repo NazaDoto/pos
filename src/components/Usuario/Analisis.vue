@@ -20,8 +20,7 @@
         </div>
 
         <p class="text-sm text-gray-500 md:mt-1">
-          Sube uno o más archivos y luego clic en "Analizar" para generar el análisis. Formatos
-          soportados: PDF, Excel, imágenes.
+          Sube uno o más archivos y luego clic en "Analizar" para generar el análisis. Asegurate de que las imágenes tengan buena calidad para un mejor reconocimiento de texto.
         </p>
       </div>
 
