@@ -1,5 +1,7 @@
 import express from "express";
 import { pool } from "../utils/db.js";
+import bcrypt from "bcrypt";
+
 const router = express.Router();
 
 // === Obtener todos los usuarios ===
