@@ -40,7 +40,7 @@ router.post("/register", async(req, res) => {
             amount = "$35.000";
             nivelText = "Nivel 2";
         } else if (nivel == "3") {
-            amount = "$50.000";
+            amount = "$40.000";
             nivelText = "Nivel 3";
         }
 
@@ -181,7 +181,7 @@ router.post("/login", async(req, res) => {
                     amount = "$35.000";
                     nivelText = "Nivel 2";
                 } else if (user.nivel == "3") {
-                    amount = "$50.000";
+                    amount = "$40.000";
                     nivelText = "Nivel 3";
                 }
 

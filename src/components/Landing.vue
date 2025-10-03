@@ -95,7 +95,7 @@
                     <!-- Nivel 3 -->
                     <div class="bg-white rounded-2xl shadow-lg p-8 flex flex-col ">
                         <h4 class="text-xl font-bold mb-4 text-gray-800">Nivel 3 - Profesional</h4>
-                        <p class="text-gray-600 mb-6">$50.000 / 30 días</p>
+                        <p class="text-gray-600 mb-6">$40.000 / 30 días</p>
                         <ul class="space-y-3 mb-8 text-gray-600">
                             <li>✔️ Modelo GPT-5</li>
                             <li>✔️ Análisis predictivo con IA de última generación</li>
